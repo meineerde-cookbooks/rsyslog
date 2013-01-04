@@ -16,15 +16,29 @@ $ModLoad imuxsock # provides support for local system logging
 $ModLoad imklog   # provides kernel logging support (previously done by rklogd)
 #$ModLoad immark  # provides --MARK-- message capability
 
-<% if node['rsyslog']['server'] -%>
-# Provide <%= @protocol.upcase %> log reception
-<% case @protocol -%>
-<% when "tcp" -%>
+<% if node.run_state["rsyslog_server"] -%>
+<% if node["server"]["server"]["protocols"].include?("tls") -%>
+# Provide TLS over TCP log reception
+$DefaultNetstreamDriver gtls
+
+$DefaultNetstreamDriverCAFile <%= node['rsyslog']['tls_ca_path'] %>
+$DefaultNetstreamDriverCertFile <%= node['rsyslog']['tls_crt_path'] %>
+$DefaultNetstreamDriverKeyFile <%= node['rsyslog']['tls_key_path'] %>
+
 $ModLoad imtcp
-$InputTCPServerRun <%= node['rsyslog']['port'] %>
-<% when "udp" -%>
+
+$InputTCPServerStreamDriverMode 1 # run driver in TLS-only mode
+$InputTCPServerStreamDriverAuthMode x509/name
+
+$InputTCPServerRun <%= node['rsyslog']['server']['tls_port'] %>
+<% elsif node["server"]["server"]["protocols"].include?("tcp") -%>
+# Provide TCP log reception
+$ModLoad imtcp
+$InputTCPServerRun <%= node['rsyslog']['server']['tcp_port'] %>
+<% end %>
+<% if node["server"]["server"]["protocols"].include?("udp") -%>
 $ModLoad imudp
-$UDPServerRun <%= node['rsyslog']['port'] %>
+$UDPServerRun <%= node['rsyslog']['server']['udp_port'] %>
 <% end -%>
 <% end -%>
 

@@ -21,6 +21,14 @@ package "rsyslog" do
   action :install
 end
 
+package "rsyslog-gnutls" do
+  action :install
+  only_if do
+    (node["rsyslog"]["client"]["protocol"] == "tls") ||
+    (node["rsyslog"]["server"]["protocols"].include? "tls")
+  end
+end
+
 cookbook_file "#{node["rsyslog"]["defaults_file"]}" do
   source "rsyslog.default"
   owner node['rsyslog']['user']
@@ -47,7 +55,7 @@ template "/etc/rsyslog.conf" do
   owner node['rsyslog']['user']
   group node['rsyslog']['group']
   mode 0644
-  variables(:protocol => node['rsyslog']['protocol'])
+  variables(:protocol => node['rsyslog']['server_protocol'])
   notifies :restart, "service[#{node['rsyslog']['service_name']}]"
 end
 

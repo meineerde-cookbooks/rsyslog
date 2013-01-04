@@ -41,8 +41,10 @@ See `attributes/default.rb` for default values.
   to determine rsyslog server. Default is `nil`.
 * `node['rsyslog']['server_search']` - Specify the criteria for the server
   search operation. Default is `role:loghost`.
-* `node['rsyslog']['protocol']` - Specify whether to use `udp` or
-  `tcp` for remote loghost. Default is `tcp`.
+* `node['rsyslog']['protocols']` - Specify whether to use `udp` or
+  `tcp` or `tls` for remote loghost. If you use `tls`, you also need to
+  specify the `tls_ca_path`, `tls_crt_path` and `tls_key_paths`.
+  Default is `["tcp"]`.
 * `node['rsyslog']['port']` - Specify the port which rsyslog should
   connect to a remote loghost.
 * `node['rsyslog']['remote_logs']` - Specify wether to send all logs

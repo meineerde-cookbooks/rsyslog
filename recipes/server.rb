@@ -17,19 +17,17 @@
 # limitations under the License.
 #
 
+node.run_state["rsyslog_server"] = true
 include_recipe "rsyslog"
 
-node.set['rsyslog']['server'] = true
-node.save unless Chef::Config[:solo]
-
-directory ::File.dirname(node['rsyslog']['log_dir']) do
+directory ::File.dirname(node['rsyslog']['server']['log_dir']) do
   owner node["rsyslog"]["user"]
   group node["rsyslog"]["group"]
   recursive true
   mode 0755
 end
 
-directory node['rsyslog']['log_dir'] do
+directory node['rsyslog']['server']['log_dir'] do
   owner node['rsyslog']['user']
   group node['rsyslog']['group']
   mode 0755
@@ -39,8 +37,8 @@ template "/etc/rsyslog.d/35-server-per-host.conf" do
   source "35-server-per-host.conf.erb"
   backup false
   variables(
-    :log_dir => node['rsyslog']['log_dir'],
-    :per_host_dir => node['rsyslog']['per_host_dir']
+    :log_dir => node['rsyslog']['server']['log_dir'],
+    :per_host_dir => node['rsyslog']['server']['per_host_dir']
   )
   owner node["rsyslog"]["user"]
   group node["rsyslog"]["group"]

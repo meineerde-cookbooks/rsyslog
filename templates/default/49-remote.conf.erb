@@ -1,6 +1,13 @@
-<% case @protocol -%>
+<% case node['client']['protocol'] -%>
+<% when "tls" -%>
+$DefaultNetstreamDriver gtls
+$DefaultNetstreamDriverCAFile <%= node['rsyslog']['tls_ca_path'] %>
+
+$ActionSendStreamDriverMode 1 # require TLS for the connection
+$ActionSendStreamDriverAuthMode x509/name
+*.* @@(o)<%= @server %>:<%= node['rsyslog']['client']['server_port'] %>
 <% when "tcp" -%>
-*.* @@<%= @server %>:<%= node['rsyslog']['port'] %>
+*.* @@<%= @server %>:<%= node['rsyslog']['client']['server_port'] %>
 <% when "udp" -%>
-*.* @<%= @server %>:<%= node['rsyslog']['port'] %>
+*.* @<%= @server %>:<%= node['rsyslog']['client']['server_port'] %>
 <% end -%>
