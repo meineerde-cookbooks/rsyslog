@@ -55,7 +55,6 @@ template "/etc/rsyslog.conf" do
   owner node['rsyslog']['user']
   group node['rsyslog']['group']
   mode 0644
-  variables(:protocol => node['rsyslog']['server_protocol'])
   notifies :restart, "service[#{node['rsyslog']['service_name']}]"
 end
 
