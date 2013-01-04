@@ -18,6 +18,7 @@
 #
 
 default["rsyslog"]["max_message_size"] = "2k"
+default["rsyslog"]["remote_logs"] = true
 
 # The most likely platform-specific attributes
 default["rsyslog"]["service_name"]     = "rsyslog"
