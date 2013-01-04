@@ -1,4 +1,4 @@
-<% case node['client']['protocol'] -%>
+<% case node['rsyslog']['client']['protocol'] -%>
 <% when "tls" -%>
 $DefaultNetstreamDriver gtls
 $DefaultNetstreamDriverCAFile <%= node['rsyslog']['tls_ca_path'] %>

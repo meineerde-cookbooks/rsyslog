@@ -22,7 +22,7 @@ include_recipe "rsyslog"
 if node['rsyslog']['client']['server_ip'].nil? && Chef::Config[:solo]
   Chef::Log.fatal("Chef Solo does not support search, therefore it is a requirement of the rsyslog::client recipe that the attribute node['rsyslog']['client']['server_ip'] is set when using Chef Solo. 'server_ip' is not set.")
 else
-  rsyslog_server = node['rsyslog']['server_ip'] ||
+  rsyslog_server = node['rsyslog']['client']['server_ip'] ||
                    search(:node, node['rsyslog']['client']['server_search']).first['ipaddress'] rescue nil
 
   if rsyslog_server.nil?
