@@ -11,3 +11,9 @@ $ActionSendStreamDriverAuthMode x509/name
 <% when "udp" -%>
 *.* @<%= @server %>:<%= node['rsyslog']['client']['server_port'] %>
 <% end -%>
+
+#
+# Stop processing of all non-local messages. You can process remote messages
+# on levels less than 49.
+#
+:fromhost-ip,!isequal,"127.0.0.1" ~
