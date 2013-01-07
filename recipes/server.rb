@@ -34,6 +34,7 @@ directory node['rsyslog']['server']['log_dir'] do
 end
 
 template "/etc/rsyslog.d/35-server-per-host.conf" do
+  only_if{ node["rsyslog"]["server"]["per_host_logs"] }
   source "35-server-per-host.conf.erb"
   backup false
   variables(
