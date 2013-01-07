@@ -17,7 +17,7 @@ $ModLoad imklog   # provides kernel logging support (previously done by rklogd)
 #$ModLoad immark  # provides --MARK-- message capability
 
 <% if node.run_state["rsyslog_server"] -%>
-<% if node["server"]["server"]["protocols"].include?("tls") -%>
+<% if node["rsyslog"]["server"]["protocols"].include?("tls") -%>
 # Provide TLS over TCP log reception
 $DefaultNetstreamDriver gtls
 
@@ -31,12 +31,12 @@ $InputTCPServerStreamDriverMode 1 # run driver in TLS-only mode
 $InputTCPServerStreamDriverAuthMode x509/name
 
 $InputTCPServerRun <%= node['rsyslog']['server']['tls_port'] %>
-<% elsif node["server"]["server"]["protocols"].include?("tcp") -%>
+<% elsif node["rsyslog"]["server"]["protocols"].include?("tcp") -%>
 # Provide TCP log reception
 $ModLoad imtcp
 $InputTCPServerRun <%= node['rsyslog']['server']['tcp_port'] %>
 <% end %>
-<% if node["server"]["server"]["protocols"].include?("udp") -%>
+<% if node["rsyslog"]["server"]["protocols"].include?("udp") -%>
 $ModLoad imudp
 $UDPServerRun <%= node['rsyslog']['server']['udp_port'] %>
 <% end -%>
