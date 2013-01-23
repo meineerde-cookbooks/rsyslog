@@ -19,14 +19,26 @@
 
 include_recipe "rsyslog"
 
-if node['rsyslog']['client']['server_ip'].nil? && Chef::Config[:solo]
-  Chef::Log.fatal("Chef Solo does not support search, therefore it is a requirement of the rsyslog::client recipe that the attribute node['rsyslog']['client']['server_ip'] is set when using Chef Solo. 'server_ip' is not set.")
+if Chef::Config[:solo] && node['rsyslog']['client']['server_ip'].nil?
+  Chef::Log.fatal("Chef Solo does not support search, therefore it is a requirement of the rsyslog::client recipe that the attribute node['rsyslog']['client']['server_ip'] is set when using Chef Solo.")
+elsif Chef::Config[:solo] && node['rsyslog']['client']['protocol'] == "tls" && node['rsyslog']['client']['server_name'].nil?
+  Chef::Log.fatal("Chef Solo does not support search, therefore it is a requirement of the rsyslog::client recipe that the attribute node['rsyslog']['client']['server_name'] is set when using Chef Solo.")
 else
-  rsyslog_server = node['rsyslog']['client']['server_ip'] ||
-                   search(:node, node['rsyslog']['client']['server_search']).first['ipaddress'] rescue nil
+  server_ip = node['rsyslog']['client']['server_ip'] ||
+                search(:node, node['rsyslog']['client']['server_search']).first['ipaddress'] rescue nil
 
-  if rsyslog_server.nil?
+  if server_ip.nil?
     raise "The rsyslog::client recipe was unable to determine the remote syslog server. Checked both the node['rsyslog']['client']['server_ip'] attribute and search()"
+  end
+
+
+  if node['rsyslog']['client']['protocol'] == "tls"
+    server_name = node['rsyslog']['client']['server_name'] ||
+                    search(:node, node['rsyslog']['client']['server_search']).first['fqdn'] rescue nil
+
+    if server_name.nil?
+      raise "The rsyslog::client recipe was unable to determine the remote syslog server. Checked both the node['rsyslog']['client']['server_name'] attribute and search()"
+    end
   end
 
   template "/etc/rsyslog.d/49-remote.conf" do
@@ -34,7 +46,8 @@ else
     source "49-remote.conf.erb"
     backup false
     variables(
-      :server => rsyslog_server
+      :server_ip => server_ip,
+      :server_name => server_name
     )
     owner node["rsyslog"]["user"]
     group node["rsyslog"]["group"]

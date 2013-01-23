@@ -29,6 +29,7 @@ $ModLoad imtcp
 
 $InputTCPServerStreamDriverMode 1 # run driver in TLS-only mode
 $InputTCPServerStreamDriverAuthMode x509/name
+$InputTCPServerStreamDriverPermittedPeer <%= node['rsyslog']['server']['permitted_peer'] %>
 
 $InputTCPServerRun <%= node['rsyslog']['server']['tls_port'] %>
 <% elsif node["rsyslog"]["server"]["protocols"].include?("tcp") -%>
