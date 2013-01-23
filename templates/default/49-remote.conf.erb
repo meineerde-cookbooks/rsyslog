@@ -8,11 +8,11 @@ $ActionSendStreamDriverPermittedPeer <%= @server_name %>
 
 $ActionSendStreamDriverMode 1 # require TLS for the connection
 $ActionSendStreamDriverAuthMode x509/name
-*.* @@(o)<%= @server_ip %>:<%= node['rsyslog']['client']['server_port'] %>
+*.* @@(o)<%= @server_ip %>:<%= node['rsyslog']['client']['server_port'] %>;<%= node["rsyslog"]["client"]["forward_template"] %>
 <% when "tcp" -%>
-*.* @@<%= @server_ip %>:<%= node['rsyslog']['client']['server_port'] %>
+*.* @@<%= @server_ip %>:<%= node['rsyslog']['client']['server_port'] %>;<%= node["rsyslog"]["client"]["forward_template"] %>
 <% when "udp" -%>
-*.* @<%= @server_ip %>:<%= node['rsyslog']['client']['server_port'] %>
+*.* @<%= @server_ip %>:<%= node['rsyslog']['client']['server_port'] %>;<%= node["rsyslog"]["client"]["forward_template"] %>
 <% end -%>
 
 #
