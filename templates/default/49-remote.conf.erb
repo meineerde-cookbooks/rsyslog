@@ -10,6 +10,7 @@ $ActionSendStreamDriverMode 1 # require TLS for the connection
 $ActionSendStreamDriverAuthMode x509/name
 *.* @@(o)<%= @server_ip %>:<%= node['rsyslog']['client']['server_port'] %>;<%= node["rsyslog"]["client"]["forward_template"] %>
 <% when "tcp" -%>
+$ActionSendStreamDriverMode 0 # disable TLS for sending
 *.* @@<%= @server_ip %>:<%= node['rsyslog']['client']['server_port'] %>;<%= node["rsyslog"]["client"]["forward_template"] %>
 <% when "udp" -%>
 *.* @<%= @server_ip %>:<%= node['rsyslog']['client']['server_port'] %>;<%= node["rsyslog"]["client"]["forward_template"] %>
