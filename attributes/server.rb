@@ -1,4 +1,6 @@
-default["rsyslog"]["server"]["protocols"]     = ["tcp", "udp"]
+# any (sub-)set of tcp, udp or tls
+# tcp and tls are mutually exclusive
+default["rsyslog"]["server"]["protocols"]     = ["udp"]
 default["rsyslog"]["server"]["tcp_port"]      = 514
 default["rsyslog"]["server"]["udp_port"]      = 514
 default["rsyslog"]["server"]["tls_port"]      = 514
