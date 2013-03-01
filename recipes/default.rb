@@ -71,3 +71,15 @@ service "#{node['rsyslog']['service_name']}" do
   supports :restart => true, :reload => true
   action [:enable, :start]
 end
+
+package "logrotate" do
+  action :install
+end
+
+template "/etc/logrotate.d/rsyslog" do
+  source "logrotate.erb"
+  owner "root"
+  group "root"
+  mode "0644"
+end
+
