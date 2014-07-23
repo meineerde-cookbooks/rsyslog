@@ -27,6 +27,8 @@ default["rsyslog"]["group"] = "adm"
 default["rsyslog"]["priv_seperation"] = false
 default["rsyslog"]["defaults_file"]   = "/etc/default/rsyslog"
 
+default['rsyslog']['rotate_command'] = "invoke-rc.d rsyslog reload"
+
 case node["platform"]
 when "ubuntu"
   # syslog user introduced with natty package
@@ -39,4 +41,8 @@ when "redhat"
   default["rsyslog"]["defaults_file"] = "/etc/sysconfig/rsyslog"
 when "arch"
   default["rsyslog"]["service_name"] = "rsyslogd"
+when 'debian'
+  if node['platform_version'].to_f >= 7 then
+    default['rsyslog']['rotate_command'] = "invoke-rc.d rsyslog rotate"
+  end
 end

@@ -7,7 +7,7 @@
   delaycompress
   compress
   postrotate
-    invoke-rc.d rsyslog reload > /dev/null
+    <%= node['rsyslog']['rotate_command'] %> > /dev/null
   endscript
 }
 
@@ -32,6 +32,6 @@
   delaycompress
   sharedscripts
   postrotate
-    invoke-rc.d rsyslog reload > /dev/null
+    <%= node['rsyslog']['rotate_command'] %> > /dev/null
   endscript
 }
